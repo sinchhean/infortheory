@@ -56,32 +56,42 @@ while true
     % 'active' field is true, into two arrays, 
     % namely activeIDs and activeWeights
     
+    %node that only contain active node
+    %activeNodes = node([node.active]==1);
+    
+    activeIDs = [node.ID];
+    activeIDs = activeIDs([node.active]==1);
+    activeWeights = [node.weight];
+    activeWeights = activeWeights([node.active]==1);
     
     % Sort the activeWeights array descending order and 
     % rearrange the activeIDs array accordingly i.e., in the rearranged 
     % activeIDs array, the ID of the least weighted node is also at the 
     % rightmost position (see MATLAB sort function)
-    
+    [activeWeights,order] = sort(activeWeights,"descend");
+    activeIDs = activeIDs(order);
     
     % Get the weights and IDs of the two least weighted nodes from
     % the (sorted) activeWeights and (rearranged) activeIDs array
     % Update the new parent node as follows:
     % Set child0 and child1 of this node to the IDs of the two least
     % weighted nodes obtained from previous step
-    
-    
+    node(N_nodes).child1 = activeIDs(end);
+    node(N_nodes).child0 = activeIDs(end-1);
+
     % Set weight of this node to sum of the weights of two children
-    
+    node(N_nodes).weight = activeWeights(end)+activeWeights(end-1);
     % Deactivate the two children nodes
-    
-    
+    node(activeIDs(end)).active = false;
+    node(activeIDs(end-1)).active = false;
     % Activate the current node
-    
+    node(N_nodes).active = true;
     % Check if there is only one active node among all nodes and
     % exit the while loop if that is the case (since we have reached
     % the root node)
-    
-    
+    if sum([node.active]) == 1
+        break;
+    end
 end
 
 %==================== CONVERT TREE TO CODE ================================
@@ -99,25 +109,29 @@ while ~isempty(nodeToTraverse)
     % the task of assigning codewords
     if currentNode > N_leaves
         % Assign appropriate codewords to its two children
-
-        
+        node(node(currentNode).child0).codeword = [node(currentNode).codeword, 0];
+        node(node(currentNode).child1).codeword = [node(currentNode).codeword, 1];
         % Update the list of node to traverse by removing this node
         % and adding two children to the list
-        
+        nodeToTraverse = nodeToTraverse(nodeToTraverse~=currentNode);
+        nodeToTraverse(end+1) = node(currentNode).child0;
+        nodeToTraverse(end+1) = node(currentNode).child1;
     else
         % If this node is a leaf node, then do nothing except removing
         % it from the list of node to traverse
-        
+        nodeToTraverse = nodeToTraverse(nodeToTraverse~=currentNode);
     end    
 end
 
 %===================== COMPRESS THE FILE ==================================
+cRawBits = [];
 for i = 1:length(rawBytes)
     % For each symbol in the file, find its corresponding position in symbol
     % array (see COUNTING THE SYMBOL). That position (index) is also the order
     % of the corresponding leaf node in the node array. Get the codeword  
     % associated with that leaf node and write it to the output array.
     % The output array should be named cRawBits
+    cRawBits = [cRawBits,node(symbol==rawBytes(i)).codeword];
 end
 
 %=========== SAVE THE COMPRESSED FILE AND THE HUFFMAN TREE ================

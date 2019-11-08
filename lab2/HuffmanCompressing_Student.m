@@ -136,18 +136,20 @@ end
 
 %=========== SAVE THE COMPRESSED FILE AND THE HUFFMAN TREE ================
 [filepath,name,ext] = fileparts([path,file]);
-fid = fopen([filepath, '\' , name, ext, '.fu'],'w');
+fid = fopen([filepath, '/' , name, ext, '.fu'],'w');
 fwrite(fid,cRawBits,'ubit1');
 fclose('all');
 compressedFileSize = length(cRawBits);
-save([filepath, '\', name, '_Tree'],'node','compressedFileSize')
+save([filepath, '/', name, '_Tree'],'node','compressedFileSize')
 
 %==================== TEST IF COMPRESSED CORRECTLY ========================
 s = 0;
-for i = 1:N_nodes
+for i = 1:N_leaves
 s = s + node(i).weight*length(node(i).codeword);
 end
-s - length(cRawBits)
+s = s - length(cRawBits);
 if s ~= 0
     error('Compressed incorrectly')
+else
+    disp('Compression successful')
 end

@@ -29,9 +29,9 @@ i = 1;
 while i <= length(cRawBits)
     while isempty(node(currentnode).sym)
         if cRawBits(i) == 0
-            currentnode = node(currentnode).child0;
+            currentnode = node(currentnode).child(0);
         else
-            currentnode = node(currentnode).child1;
+            currentnode = node(currentnode).child(1);
         end  
         i = i + 1;
     end
@@ -43,6 +43,6 @@ end
 %======================= STORE THE DECOMPRESSED FILE ======================
 [filepath,name,ext] = fileparts([path,file]);
 dot = find(name == '.');
-fid = fopen([filepath, '/' , name(1:dot-1), '_decompressed', name(dot:end)],'w');
+fid = fopen([filepath, '\' , name(1:dot-1), '_decompressed', name(dot:end)],'w');
 fwrite(fid,dRawBytes,'ubit8');
 fclose('all');

@@ -136,7 +136,7 @@ for i = 1:length(rawBytes)
     % The output array should be named cRawBits
     %cRawBits = [cRawBits,node(symbol==rawBytes(i)).codeword];
     CW = node(symbol==rawBytes(i)).codeword;
-    cRawBits(pointer:pointer+length(CW)-1) = CW;
+    cRawBits(pointer:poimnt+length(CW)-1) = CW;
     pointer = pointer + length(CW);
 end
 cRawBits = cRawBits(1:pointer-1);

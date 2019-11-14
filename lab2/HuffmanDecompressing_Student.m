@@ -23,7 +23,10 @@ k = 0;
 % of the leaf node to get the original data and write it to the output
 % array. Repeat until we have processed the whole input compressed file
 % Note: The output array should be named dRawBytes
-dRawBytes = [];
+%dRawBytes = [];
+dRawBytes = zeros(1,int16(length(cRawBits)/8));
+pointer = 1;
+
 currentnode = length(node);
 i = 1;
 while i <= length(cRawBits)
@@ -35,10 +38,11 @@ while i <= length(cRawBits)
         end  
         i = i + 1;
     end
-    dRawBytes = [dRawBytes,node(currentnode).sym];
+    dRawBytes(pointer) = node(currentnode).sym;
+    pointer = pointer + 1;
     currentnode = length(node);
 end
-
+dRawBytes = dRawBytes(1: pointer-1);
 
 %======================= STORE THE DECOMPRESSED FILE ======================
 [filepath,name,ext] = fileparts([path,file]);

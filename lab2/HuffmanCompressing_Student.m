@@ -11,12 +11,14 @@ fclose('all');
 
 symbol = uint8(0:255);
 count = zeros(1,256);
+count1 = zeros(1,256);
 BITS_PER_BYTE = 8;
 
 %=================== COUNTING THE SYMBOLS =================================
 % Counting the number of occurrences for each symbol
 % The symbols should be stored in an array named symbol
 % while their count (frequency) should be stored in an array named count
+
 for i=1:length(rawBytes)
     for j=1:length(symbol)
         if rawBytes(i) == symbol(j)
@@ -26,9 +28,15 @@ for i=1:length(rawBytes)
     end
 end
 
+for m=1:length(rawBytes)
+    count1(rawBytes(m)) = count1(rawBytes(m)) + 1;   
+end
+
+
 % truncate zero-count symbols
 symbol = symbol(count > 0);     
 count = count(count > 0);
+count1 = count1(count1 > 0);
 N_leaves = length(symbol);
 N_nodes = N_leaves;
 
